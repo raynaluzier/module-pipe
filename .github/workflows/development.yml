@@ -3,8 +3,7 @@ name: Module Check & Validation
 on:
   pull_request:
     branches:
-      - 'development'
-      - 'main'
+      - 'release'
 
 jobs:
   tflint:
