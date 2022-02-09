@@ -5,8 +5,8 @@ on:
       - 'main'
 
 jobs:
-  match-pr-label:
-    name: Match PR Label
+  increment:
+    name: Auto-Increment Version
     runs-on: ubuntu-latest
     steps:
      - name: Auto Increment Semver Action
