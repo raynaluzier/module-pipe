@@ -5,3 +5,10 @@ on:
       - 'main'
 
 jobs:
+  match-pr-label:
+    name: Match PR Label
+    runs-on: ubuntu-latest
+    steps:
+      - uses: zwaldowski/match-label-action@v1
+        with:
+          allowed: major, minor, patch
