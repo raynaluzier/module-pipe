@@ -1,0 +1,49 @@
+name: Module Check & Validation
+
+on:
+  pull_request:
+    branches:
+      - 'development'
+      - 'main'
+
+jobs:
+  tflint:
+    name: Code Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        name: Cache Plugin Directory
+        with:
+          path: ~/.tflint.d/plugins
+          key: ubuntu-latest-tflint-${{ hashFiles('.tflint.hcl')}}
+      
+      - name: Setup TFLint
+        uses: terraform-linters/setup-tflint@v1
+        with:
+          tflint_version: latest
+      
+      - name: Initialize TFLint
+        run: tflint --init
+      
+      # Will only show details if there are issues
+      # The action itself has no outputs
+      - name: Run TFLint
+        run: tflint -f compact
+
+  setup-terraform:
+    name: Setup Terraform & Check Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: hashicorp/setup-terraform@v1.2.1
+        with:
+          cli_config_credentials_hostname: 'app.terraform.io'
+          cli_config_credentials_token: ${{ secrets.TFC_TOKEN }}
+          terraform_version: latest
+          terraform_wrapper: true
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -list=true -write=false -diff=true
+        continue-on-error: true
