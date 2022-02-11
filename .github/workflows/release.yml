@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: bump_version
-      - uses: christian-draeger/increment-semantic-version@1.0.2
+        uses: christian-draeger/increment-semantic-version@1.0.2
         with:
           current-version: '0.0.1'
           version-fragment: 'bug'
