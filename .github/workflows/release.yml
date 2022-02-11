@@ -1,32 +1,31 @@
 name: Release
 on:
-  pull_request:
+  push:
     branches:
       - 'main'
 
 jobs:
-  bump:
-    name: Bump Version
+  release:
+    name: Create a Github Release
     runs-on: ubuntu-latest
     steps:
-      - id: bump
-        uses: zwaldowski/match-label-action@v1
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@v1
         with:
-          allowed: major, minor, patch
-      - uses: zwaldowski/semver-release-action@v1
-        with:
-          dry_run: true
-          bump: ${{ steps.bump.outputs.version }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-       # Do something to modify the repo using `${{ steps.bump.outputs.version }}`.
-      - run: echo "${{ steps.bump.outputs.version }}"
-      - run: |
-          git add .
-          git commit -m "Bump version"
-          git push
-          echo ::set-output name=sha::$(git rev-parse HEAD)
-      - uses: zwaldowski/semver-release-action@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ steps.git_commit.outputs.sha }}
+          node-version: "14.x"
+      - name: Install and Run Semantic Release
+        run: |
+          curl -Ls https://github.com/segmentio/terraform-docs/releases/download/v0.8.2/terraform-docs-v0.8.2-linux-amd64 -o terraform-docs
+          chmod +x terraform-docs && ./terraform-docs markdown document . > module.md
+          npm install -g semantic-release            \
+          "@semantic-release/changelog"              \
+          "@semantic-release/commit-analyzer"        \
+          "@semantic-release/exec"                   \
+          "@semantic-release/git"                    \
+          "@semantic-release/github"                 \
+          "@semantic-release/release-notes-generator"
+          npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
 
