@@ -15,17 +15,11 @@ jobs:
           allowed: major,minor,patch
       - uses: zwaldowski/semver-release-action@v1
         with:
-          bump: ${{ steps.bump.outputs.match }}
-          github_token: ${{ secrets.GH_TOKEN }}
-  
-      - id: next_version
-        uses: zwaldowski/semver-release-action@v1
-        with:
           dry_run: true
-          bump: ${{ steps.next_version.outputs.version }}
+          bump: ${{ steps.bump.outputs.version }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-       # Do something to modify the repo using `${{ steps.next_version.outputs.version }}`.
-      - run: echo "${{ steps.next_version.outputs.version }}"
+       # Do something to modify the repo using `${{ steps.bump.outputs.version }}`.
+      - run: echo "${{ steps.bump.outputs.version }}"
       - run: |
           git add .
           git commit -m "Bump version"
