@@ -1,6 +1,6 @@
 name: Release
 on:
-  push:
+  pull_request:
     branches:
       - 'main'
 
@@ -12,7 +12,7 @@ jobs:
       - id: bump
         uses: zwaldowski/match-label-action@v1
         with:
-          allowed: major,minor,patch
+          allowed: major, minor, patch
       - uses: zwaldowski/semver-release-action@v1
         with:
           dry_run: true
