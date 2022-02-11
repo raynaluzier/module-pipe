@@ -4,28 +4,51 @@ on:
     branches:
       - 'main'
 
-jobs:   
+jobs:
   release:
-    name: Create GH Release
+    name: Create a Github Release
     runs-on: ubuntu-latest
     steps:
-      - name: bump_version
-        uses: christian-draeger/increment-semantic-version@1.0.2
+      - uses: actions/checkout@main
+      - uses: actions/setup-node@v1
         with:
-          current-version: '0.0.1'
-          version-fragment: 'bug'
-      - run: echo "${{ steps.bump_version.outputs.next-version }}"
+          node-version: "13.x"
+      - name: Install and Run Semantic Release
+        run: |
+          curl -Ls https://github.com/segmentio/terraform-docs/releases/download/v0.8.2/terraform-docs-v0.8.2-linux-amd64 -o terraform-docs
+          chmod +x terraform-docs && ./terraform-docs markdown document . > module.md
+          npm install -g semantic-release            \
+          "@semantic-release/changelog"              \
+          "@semantic-release/commit-analyzer"        \
+          "@semantic-release/exec"                   \
+          "@semantic-release/git"                    \
+          "@semantic-release/github"                 \
+          "@semantic-release/release-notes-generator"
+          npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+#   release:
+#     name: Create GH Release
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: bump_version
+#         uses: christian-draeger/increment-semantic-version@1.0.2
+#         with:
+#           current-version: '0.0.1'
+#           version-fragment: 'bug'
+#       - run: echo "${{ steps.bump_version.outputs.next-version }}"
       
-      - name: Add to Commit
-        uses: actions/checkout@main
-      - run: echo "${{ steps.bump_version.outputs.next-version }}"
-      - run: |
-          git tag -a "${{ steps.bump_version.outputs.next-version }}" -m "Bump version"
-          git push ${{ steps.bump_version.outputs.next-version }}
-          echo ::set-output name=sha::$(git rev-parse HEAD)
+#       - name: Add to Commit
+#         uses: actions/checkout@main
+#       - run: echo "${{ steps.bump_version.outputs.next-version }}"
+#       - run: |
+#           git tag -a "${{ steps.bump_version.outputs.next-version }}" -m "Bump version"
+#           git push ${{ steps.bump_version.outputs.next-version }}
+#           echo ::set-output name=sha::$(git rev-parse HEAD)
           
-      - uses: zwaldowski/semver-release-action@v1
-        with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          sha: ${{ steps.git_commit.outputs.sha }}
+#       - uses: zwaldowski/semver-release-action@v1
+#         with:
+#           github_token: ${{ secrets.GH_TOKEN }}
+#           sha: ${{ steps.git_commit.outputs.sha }}
 
