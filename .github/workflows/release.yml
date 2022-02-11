@@ -5,19 +5,28 @@ on:
       - 'main'
 
 jobs:
+#   get-commit:
+#     name: Get Commit Message
+#     runs-on: ubuntu-latest
+    
   bump:
     name: Bump Version
     runs-on: ubuntu-latest
     steps:
-      - id: bump
-        uses: zwaldowski/match-label-action@v1
-        with:
-          allowed: major, minor, patch
-      - uses: zwaldowski/semver-release-action@v1
-        with:
-          dry_run: true
-          bump: ${{ steps.bump.outputs.version }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      id: bump_version
+      uses: christian-draeger/increment-semantic-version@1.0.2
+      with:
+        current-version: '0.0.1'
+        version-fragment: 'bug'
+      
+      name: Do something with your bumped release version
+      run: echo ${{ steps.bump_version.outputs.next-version }}
+      
+#   - uses: zwaldowski/semver-release-action@v1
+#       with:
+#         dry_run: true
+#         bump: ${{ steps.bump.outputs.version }}
+#         github_token: ${{ secrets.GH_TOKEN }}
        # Do something to modify the repo using `${{ steps.bump.outputs.version }}`.
       - run: echo "${{ steps.bump.outputs.version }}"
       - run: |
