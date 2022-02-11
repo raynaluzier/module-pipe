@@ -4,23 +4,19 @@ on:
     branches:
       - 'main'
 
-jobs:
-#   get-commit:
-#     name: Get Commit Message
-#     runs-on: ubuntu-latest
-    
-  bump:
-    name: Bump Version
+jobs:   
+  release:
+    name: Create GH Release
     runs-on: ubuntu-latest
     steps:
-      id: bump_version
-      uses: christian-draeger/increment-semantic-version@1.0.2
-      with:
-        current-version: '0.0.1'
-        version-fragment: 'bug'
+      - name: bump_version
+      - uses: christian-draeger/increment-semantic-version@1.0.2
+        with:
+          current-version: '0.0.1'
+          version-fragment: 'bug'
       
-      name: Do something with your bumped release version
-      run: echo ${{ steps.bump_version.outputs.next-version }}
+      - name: Do something with your bumped release version
+        run: echo ${{ steps.bump_version.outputs.next-version }}
       
 #   - uses: zwaldowski/semver-release-action@v1
 #       with:
