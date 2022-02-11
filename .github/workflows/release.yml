@@ -13,10 +13,7 @@ jobs:
         uses: christian-draeger/increment-semantic-version@1.0.2
         with:
           current-version: '0.0.1'
-          version-fragment: 'bug'
-      
-      - name: Do something with your bumped release version
-        run: echo ${{ steps.bump_version.outputs.next-version }}
+          version-fragment: 'bug'    
       
 #   - uses: zwaldowski/semver-release-action@v1
 #       with:
@@ -24,14 +21,15 @@ jobs:
 #         bump: ${{ steps.bump.outputs.version }}
 #         github_token: ${{ secrets.GH_TOKEN }}
 #        # Do something to modify the repo using `${{ steps.bump.outputs.version }}`.
-#       - run: echo "${{ steps.bump.outputs.version }}"
-#       - run: |
-#           git add .
-#           git commit -m "Bump version"
-#           git push
-#           echo ::set-output name=sha::$(git rev-parse HEAD)
-#       - uses: zwaldowski/semver-release-action@v1
-#         with:
-#           github_token: ${{ secrets.GITHUB_TOKEN }}
-#           sha: ${{ steps.git_commit.outputs.sha }}
+      - name: Add to Commit
+        uses: actions/checkout@main
+      - run: echo "${{ steps.bump_version.outputs.next_version }}"
+      - run: |
+          git tag -a "${{ steps.bump_version.outputs.next_version }}" -m "Bump version"
+          git push ${{ steps.bump_version.outputs.next_version }}
+          echo ::set-output name=sha::$(git rev-parse HEAD)
+      - uses: zwaldowski/semver-release-action@v1
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          sha: ${{ steps.git_commit.outputs.sha }}
 
