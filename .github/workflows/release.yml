@@ -23,15 +23,15 @@ jobs:
 #         dry_run: true
 #         bump: ${{ steps.bump.outputs.version }}
 #         github_token: ${{ secrets.GH_TOKEN }}
-       # Do something to modify the repo using `${{ steps.bump.outputs.version }}`.
-      - run: echo "${{ steps.bump.outputs.version }}"
-      - run: |
-          git add .
-          git commit -m "Bump version"
-          git push
-          echo ::set-output name=sha::$(git rev-parse HEAD)
-      - uses: zwaldowski/semver-release-action@v1
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          sha: ${{ steps.git_commit.outputs.sha }}
+#        # Do something to modify the repo using `${{ steps.bump.outputs.version }}`.
+#       - run: echo "${{ steps.bump.outputs.version }}"
+#       - run: |
+#           git add .
+#           git commit -m "Bump version"
+#           git push
+#           echo ::set-output name=sha::$(git rev-parse HEAD)
+#       - uses: zwaldowski/semver-release-action@v1
+#         with:
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+#           sha: ${{ steps.git_commit.outputs.sha }}
 
