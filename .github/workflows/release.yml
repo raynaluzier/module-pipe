@@ -28,27 +28,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
-#   release:
-#     name: Create GH Release
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: bump_version
-#         uses: christian-draeger/increment-semantic-version@1.0.2
-#         with:
-#           current-version: '0.0.1'
-#           version-fragment: 'bug'
-#       - run: echo "${{ steps.bump_version.outputs.next-version }}"
-      
-#       - name: Add to Commit
-#         uses: actions/checkout@main
-#       - run: echo "${{ steps.bump_version.outputs.next-version }}"
-#       - run: |
-#           git tag -a "${{ steps.bump_version.outputs.next-version }}" -m "Bump version"
-#           git push ${{ steps.bump_version.outputs.next-version }}
-#           echo ::set-output name=sha::$(git rev-parse HEAD)
-          
-#       - uses: zwaldowski/semver-release-action@v1
-#         with:
-#           github_token: ${{ secrets.GH_TOKEN }}
-#           sha: ${{ steps.git_commit.outputs.sha }}
 
