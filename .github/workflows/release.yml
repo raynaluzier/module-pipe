@@ -2,20 +2,36 @@ name: Release
 on:
   push:
     branches:
-      - 'release'
+      - 'main'
 
 jobs:
-  increment:
-    name: Auto-Increment Version
+  bump:
+    name: Bump Version
     runs-on: ubuntu-latest
     steps:
-     - name: Auto Increment Semver Action
-       uses: MCKanpolat/auto-semver-action@1.0.5
-       id: versioning
-       with:
-         releaseType: patch 
-         incrementPerCommit: false
-         github_token: ${{ secrets.GH_TOKEN }}
-
-     - name: Next Release Number
-       run: echo ${{ steps.versioning.outputs.version }}
+      - id: bump
+        uses: zwaldowski/match-label-action@v1
+        with:
+          allowed: major,minor,patch
+      - uses: zwaldowski/semver-release-action@v1
+        with:
+          bump: ${{ steps.bump.outputs.match }}
+          github_token: ${{ secrets.GH_TOKEN }}
+  
+      - id: next_version
+        uses: zwaldowski/semver-release-action@v1
+        with:
+          dry_run: true
+          bump: ${{ … }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+       # Do something to modify the repo using `${{ steps.next_version.outputs.version }}`.
+      - run: echo "${{ steps.next_version.outputs.version }}"
+      - run: |
+          git add .
+          git commit -m "Bump version"
+          git push
+          echo ::set-output name=sha::$(git rev-parse HEAD)
+      - uses: zwaldowski/semver-release-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          sha: ${{ steps.git_commit.outputs.sha }}
