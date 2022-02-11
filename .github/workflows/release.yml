@@ -15,19 +15,14 @@ jobs:
           current-version: '0.0.1'
           version-fragment: 'bug'    
       
-#   - uses: zwaldowski/semver-release-action@v1
-#       with:
-#         dry_run: true
-#         bump: ${{ steps.bump.outputs.version }}
-#         github_token: ${{ secrets.GH_TOKEN }}
-#        # Do something to modify the repo using `${{ steps.bump.outputs.version }}`.
       - name: Add to Commit
         uses: actions/checkout@main
-      - run: echo "${{ steps.bump_version.outputs.next_version }}"
+      - run: echo "${{ steps.bump_version.outputs.next-version }}"
       - run: |
-          git tag -a "${{ steps.bump_version.outputs.next_version }}" -m "Bump version"
-          git push ${{ steps.bump_version.outputs.next_version }}
+          git tag -a "${{ steps.bump_version.outputs.next-version }}" -m "Bump version"
+          git push ${{ steps.bump_version.outputs.next-version }}
           echo ::set-output name=sha::$(git rev-parse HEAD)
+          
       - uses: zwaldowski/semver-release-action@v1
         with:
           github_token: ${{ secrets.GH_TOKEN }}
